@@ -1,0 +1,4 @@
+name: CopsAndCriminals
+version: '${project.version}'
+main: org.pminecraft.copsandcriminals.CopsAndCriminals
+api-version: '1.20'
