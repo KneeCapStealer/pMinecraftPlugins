@@ -28,7 +28,7 @@ public final class CopsAndCriminals extends JavaPlugin {
         badge = createSheriffBadge();
         baton = createBaton();
 
-        new BadgeListener(this, badge, cellLocation);
+        new BadgeListener(this, badge, baton, cellLocation);
         new BatonListener(this, baton, cellLocation);
         getCommand("spawnsheriffbadge").setExecutor(new BadgeCommand(badge));
         getCommand("togglepresident").setExecutor(new PresidentCommand(this));
