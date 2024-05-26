@@ -2,3 +2,21 @@ name: CopsAndCriminals
 version: '${project.version}'
 main: org.pminecraft.copsandcriminals.CopsAndCriminals
 api-version: '1.20'
+depend: [NBTAPI]
+
+commands:
+  spawnsheriffbadge:
+    description: Spawn Sheriff Badge
+    usage: /spawnsheriffbadge <player_name>
+    aliases: badge
+    permission: president
+  togglepresident:
+    description: Toggle the president permission
+    usage: /togglepresident <player_name>
+    aliases: president
+    permission: op
+
+permissions:
+  president:
+    description: Gives the player access to president activities
+    default: false

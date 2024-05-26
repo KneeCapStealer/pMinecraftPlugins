@@ -37,6 +37,9 @@
             <goals>
               <goal>shade</goal>
             </goals>
+            <configuration>
+              <outputFile>D:\Dev\Minecraft\Plugins\SpigotServer\Spigot 1.20.4\plugins\CopsAndCriminals.jar</outputFile>
+            </configuration>
           </execution>
         </executions>
       </plugin>
