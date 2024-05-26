@@ -42,7 +42,11 @@ public class PresidentCommand implements CommandExecutor {
         attachment.setPermission("president", !attachment.getPermissions().getOrDefault("president", false));
         target.updateCommands();
 
-        Bukkit.broadcastMessage(target.getName() + " has toggled president");
+        if (attachment.getPermissions().get("president")) {
+            Bukkit.broadcastMessage(target.getName() + " is now president!!!");
+            return true;
+        }
+        Bukkit.broadcastMessage(target.getName() + " is no longer president!");
 
         return true;
     }
