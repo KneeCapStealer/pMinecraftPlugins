@@ -18,6 +18,7 @@ import org.pminecraft.copsandcriminals.CopsAndCriminals;
 import java.io.*;
 import java.lang.reflect.Type;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class PresidentCommand implements CommandExecutor {
@@ -26,7 +27,17 @@ public class PresidentCommand implements CommandExecutor {
 
     public PresidentCommand(CopsAndCriminals plugin) {
         this.plugin = plugin;
-        playerAttachments = loadAttachments();
+        // Load the saved values and apply them to the plugin
+        for (Map.Entry<UUID, PermissionAttachment> attach: loadAttachments().entrySet()) {
+            UUID playerID = attach.getKey();
+            Player p = Bukkit.getPlayer(playerID);
+            playerAttachments.put(playerID, p.addAttachment(plugin));
+            for (Map.Entry<String, Boolean> perm: attach.getValue().getPermissions().entrySet()) {
+                playerAttachments.get(playerID).setPermission(perm.getKey(), perm.getValue());
+            }
+
+            p.updateCommands();
+        }
     }
 
     public void saveAttachments() {
