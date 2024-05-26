@@ -3,10 +3,14 @@ package org.pminecraft.copsandcriminals.items.sheriffbadge;
 import de.tr7zw.nbtapi.NBTItem;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -15,18 +19,24 @@ import org.util.Ref;
 
 public class BadgeListener implements Listener {
     ItemStack badge;
+    ItemStack baton;
     Ref<Location> cellLocation;
 
 
-    public BadgeListener(CopsAndCriminals plugin, ItemStack badge, Ref<Location> cellLocation) {
+    public BadgeListener(CopsAndCriminals plugin, ItemStack badge, ItemStack baton, Ref<Location> cellLocation) {
         Bukkit.getPluginManager().registerEvents(this, plugin);
         this.badge = badge;
+        this.baton = baton;
         this.cellLocation = cellLocation;
     }
 
     @EventHandler
-    public void onItemUse(PlayerInteractEvent interactEvent) {
-        ItemStack item = interactEvent.getItem();
+    public void setCellLocation(PlayerInteractEvent event) {
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK) {
+            return;
+        }
+
+        ItemStack item = event.getItem();
         if (item == null) {
             return;
         }
@@ -39,13 +49,43 @@ public class BadgeListener implements Listener {
         if (!new NBTItem(item).getBoolean("SheriffBadge")) {
             return;
         }
-        Player player = interactEvent.getPlayer();
-        Block block = player.getTargetBlock(null, 15);
-        cellLocation.set(block.getLocation());
+
+        Location loc = event.getClickedBlock().getLocation();
+        if (loc.distance(event.getPlayer().getLocation()) > 10) {
+            return;
+        }
+
+        cellLocation.set(loc);
 
         String message = "Holding cell location set to x: " + cellLocation.get().getBlockX()
                 + ", y: " + cellLocation.get().getBlockY()
                 + ", z: " + cellLocation.get().getBlockZ();
         Bukkit.broadcastMessage(message);
+    }
+
+    @EventHandler
+    public void giveBaton(EntityDamageByEntityEvent event) {
+        Entity damager = event.getDamager();
+        if (!(damager instanceof Player)) {
+            return;
+        }
+
+        Entity damaged = event.getEntity();
+        if (!(damaged instanceof Player)) {
+            return;
+        }
+        Player officer = (Player) damaged;
+        Player sheriff = (Player) damager;
+
+        ItemStack weapon = sheriff.getInventory().getItemInMainHand();
+        if (!new NBTItem(weapon).getBoolean("SheriffBadge")) {
+            return;
+        }
+
+        event.setCancelled(true);
+        officer.getInventory().addItem(baton);
+
+        sheriff.sendMessage("You gave " + officer.getName() + " a baton!");
+        officer.sendMessage("You received a baton from " + sheriff.getName()+ "!!");
     }
 }

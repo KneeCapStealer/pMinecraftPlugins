@@ -8,6 +8,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.pminecraft.copsandcriminals.commands.PresidentCommand;
+import org.pminecraft.copsandcriminals.items.policebaton.BatonListener;
 import org.pminecraft.copsandcriminals.items.sheriffbadge.BadgeCommand;
 import org.pminecraft.copsandcriminals.items.sheriffbadge.BadgeListener;
 import org.util.Ref;
@@ -16,6 +17,7 @@ import java.util.Vector;
 
 public final class CopsAndCriminals extends JavaPlugin {
     ItemStack badge;
+    ItemStack baton;
     Ref<Location> cellLocation = new Ref<>();
 
     @Override
@@ -24,8 +26,10 @@ public final class CopsAndCriminals extends JavaPlugin {
         Bukkit.getLogger().info("Plugin started");
 
         badge = createSheriffBadge();
+        baton = createBaton();
 
         new BadgeListener(this, badge, cellLocation);
+        new BatonListener(this, baton, cellLocation);
         getCommand("spawnsheriffbadge").setExecutor(new BadgeCommand(badge));
         getCommand("togglepresident").setExecutor(new PresidentCommand(this));
         Bukkit.getLogger().info("CopsAndCriminals plugin finished loading");
@@ -59,7 +63,25 @@ public final class CopsAndCriminals extends JavaPlugin {
 
         NBTItem nbtItem = new NBTItem(item);
         nbtItem.setBoolean("SheriffBadge", true);
-        nbtItem.setByte("CustomRoleplayData", (byte) 1);
+        nbtItem.setByte("CustomRoleplayData", (byte) 2);
+
+        return nbtItem.getItem();
+    }
+
+    ItemStack createBaton() {
+        ItemStack item = new ItemStack(Material.STICK, 1);
+        ItemMeta meta = item.getItemMeta();
+        assert meta != null;
+
+        meta.setDisplayName("Baton");
+        Vector<String> lore = new Vector<>();
+        lore.add("This is a baton and is used by officers");
+        lore.add("When attacking a player with the item they are sent to the holding cell");
+        meta.setLore(lore);
+
+        NBTItem nbtItem = new NBTItem(item);
+        nbtItem.setBoolean("Baton", true);
+        nbtItem.setByte("CustomRoleplayData", (byte) 3);
 
         return nbtItem.getItem();
     }
