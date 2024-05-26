@@ -27,14 +27,13 @@ public class BadgeCommand implements CommandExecutor {
             return true;
         }
 
-        if (!target.isPermissionSet("president") || !target.hasPermission("president")) {
-            sender.sendMessage("Det er kun presidenten der må udgive badges");
+        if (!target.hasPermission("president")) {
+            sender.sendMessage("Only the president can give badges");
             return true;
         }
 
-        Bukkit.broadcastMessage(sender.getName() + " sent the command: " + command.getName() + " and gave " + args[0] + " a badge");
-
         target.getInventory().addItem(badge);
+        sender.sendMessage("you gave " + args[0] + " a badge!!");
 
         return true;
     }

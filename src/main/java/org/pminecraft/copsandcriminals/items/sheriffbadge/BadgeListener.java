@@ -60,7 +60,7 @@ public class BadgeListener implements Listener {
         String message = "Holding cell location set to x: " + cellLocation.get().getBlockX()
                 + ", y: " + cellLocation.get().getBlockY()
                 + ", z: " + cellLocation.get().getBlockZ();
-        Bukkit.broadcastMessage(message);
+        event.getPlayer().sendMessage(message);
     }
 
     @EventHandler
