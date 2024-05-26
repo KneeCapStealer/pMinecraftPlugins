@@ -34,7 +34,6 @@ public final class CopsAndCriminals extends JavaPlugin {
     @Override
     public void onEnable() {
         // Plugin startup logic
-        Bukkit.getLogger().info("Plugin started");
 
         badge = createSheriffBadge();
         baton = createBaton();
@@ -46,19 +45,19 @@ public final class CopsAndCriminals extends JavaPlugin {
         new BatonListener(this, baton, cellLocation);
         getCommand("spawnsheriffbadge").setExecutor(new BadgeCommand(badge));
         getCommand("togglepresident").setExecutor(presidentCommand);
-        Bukkit.getLogger().info("CopsAndCriminals plugin finished loading");
     }
 
     @Override
     public void onDisable() {
         // Plugin shutdown logic
-        Bukkit.getLogger().info("CopsAndCriminals plugin finished shutting down");
-        String message = "Holding cell location set to x: " + cellLocation.get().getBlockX()
+        String message = "[CopsAndCriminals] Holding cell location set to x: " + cellLocation.get().getBlockX()
                 + ", y: " + cellLocation.get().getBlockY()
                 + ", z: " + cellLocation.get().getBlockZ();
 
         Bukkit.getLogger().info("[CopsAndCriminals] Saving president permission attachments");
         presidentCommand.saveAttachments();
+        Bukkit.getLogger().info("[CopsAndCriminals] Saving cell location");
+        saveCellLocation();
     }
 
     void saveCellLocation() {
